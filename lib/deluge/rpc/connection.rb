@@ -98,7 +98,7 @@ module Deluge
           args   = args[0]
         end
 
-        future = Concurrent::Future.new
+        future = Concurrent::IVar.new
 
         request_id = @request_id.increment
         @messages[request_id] = future
@@ -149,7 +149,6 @@ module Deluge
 
       def dispatch_packet(packet)
         type, response_id, value = packet
-
         case type
         when RPC_RESPONSE, RPC_ERROR
           future = @messages.delete(response_id)
