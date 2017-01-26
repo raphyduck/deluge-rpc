@@ -90,7 +90,7 @@ module Deluge
         kwargs = {}
         kwargs = args.pop if args.size == 1 && args.last.is_a?(Hash)
 
-        future = Concurrent::IVar.new
+        future = Concurrent::Future.new
 
         request_id = @request_id.increment
         @messages[request_id] = future
@@ -102,7 +102,7 @@ module Deluge
         result = future.value!(@call_timeout)
 
         if result.nil? && future.pending?
-          raise InvokeTimeoutError.new("Failed to retreive response for '#{method}' in #{@call_timeout} seconds. Probably method not exists.")
+          raise InvokeTimeoutError.new("Failed to retrieve response for '#{method}' in #{@call_timeout} seconds. Probably method not exists.")
         end
 
         result
