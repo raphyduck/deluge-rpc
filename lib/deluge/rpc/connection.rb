@@ -98,7 +98,7 @@ module Deluge
           args   = args[0]
         end
 
-        future = Concurrent::IVar.new
+        future = Concurrent::Future.new
 
         request_id = @request_id.increment
         @messages[request_id] = future
