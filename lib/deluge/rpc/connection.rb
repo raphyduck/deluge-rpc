@@ -223,7 +223,7 @@ module Deluge
         packets = []
 
         until(io.eof?)
-          packets << Rencoder.load(io)
+          packets << Rencoder.load(io) rescue nil
         end
 
         packets
