@@ -82,7 +82,7 @@ module Deluge
 
       def close
         @running.make_false
-        Thread.kill(@thread)
+        Thread.kill(@thread) if @thread && @thread.alive?
         while @thread.alive?
           sleep 1
         end
