@@ -82,6 +82,12 @@ module Deluge
 
       def close
         @running.make_false
+        Thread.kill(@thread)
+        while @thread.alive?
+          sleep 1
+        end
+        @connection.close if @connection
+        @connection = nil
       end
 
       def call(method, *args)
@@ -142,25 +148,25 @@ module Deluge
       def dispatch_packet(packet)
         type, response_id, value = packet
         case type
-        when RPC_RESPONSE, RPC_ERROR
-          future = @messages.delete(response_id)
+          when RPC_RESPONSE, RPC_ERROR
+            future = @messages.delete(response_id)
 
-          return unless future # TODO: Handle unknown messages
+            return unless future # TODO: Handle unknown messages
 
-          if type == RPC_RESPONSE
-            future.set(value)
+            if type == RPC_RESPONSE
+              future.set(value)
+            else
+              future.fail(RPCError.new(value))
+            end
+          when RPC_EVENT
+            handlers = @events[response_id]
+            return unless handlers # TODO: Handle unknown events
+
+            handlers.each do |block|
+              block.call(*value)
+            end
           else
-            future.fail(RPCError.new(value))
-          end
-        when RPC_EVENT
-          handlers = @events[response_id]
-          return unless handlers # TODO: Handle unknown events
-
-          handlers.each do |block|
-            block.call(*value)
-          end
-        else
-          raise "Unknown packet type #{type.inspect}"
+            raise "Unknown packet type #{type.inspect}"
         end
       end
 
