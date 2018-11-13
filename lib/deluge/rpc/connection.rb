@@ -94,7 +94,7 @@ module Deluge
           cnt += 1
           Thread.kill(@thread)
         end
-        @thread = nil if @thread.alive?
+        @thread = nil if @thread
         @connection.close if @connection
         @connection = nil
       end
