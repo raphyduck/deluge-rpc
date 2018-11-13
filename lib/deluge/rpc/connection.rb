@@ -83,9 +83,13 @@ module Deluge
       def close
         @running.make_false
         Thread.kill(@thread) if @thread && @thread.alive?
-        while @thread && @thread.alive?
+        cnt = 1
+        while @thread && @thread.alive? && cnt <= 30
           sleep 1
+          cnt += 1
+          Thread.kill(@thread)
         end
+        @thread = nil if @thread.alive?
         @connection.close if @connection
         @connection = nil
       end
