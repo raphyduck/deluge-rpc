@@ -104,6 +104,7 @@ module Deluge
 
         kwargs = {}
         kwargs = args.pop if args.size == 1 && args.last.is_a?(Hash)
+        kwargs = {'client_version' => '0.2.0'} if method == DAEMON_LOGIN # quick and dirty fix
 
         future = Concurrent::IVar.new
 
