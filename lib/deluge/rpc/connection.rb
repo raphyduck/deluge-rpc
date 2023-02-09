@@ -103,9 +103,12 @@ module Deluge
         raise "Not connected!" unless @connection
 
         kwargs = {}
-        if args.size == 1 && args[0].last.is_a?(Hash)
+        if args.size == 1 && args[0].is_a?(Array) && args[0].last.is_a?(Hash)
           kwargs = args[0].pop
           args   = args[0]
+        elsif args.size == 1 && args.last.is_a?(Hash)
+          kwargs = args.pop
+          args   = args
         end
 
         future = Concurrent::IVar.new
