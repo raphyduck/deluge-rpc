@@ -12,7 +12,8 @@ Gem::Specification.new do |spec|
   spec.description   = %q{Communicate with Deluge torrent client via RPC protocol}
   spec.homepage      = "https://github.com/t3hk0d3/deluge-rpc"
   spec.license       = "MIT"
-  spec.required_ruby_version = '>= 2.6' # rubocop:disable Gemspec/RequiredRubyVersion
+  # Adapté pour Ruby 3.x (keyword args, etc.)
+  spec.required_ruby_version = '>= 3.0' # rubocop:disable Gemspec/RequiredRubyVersion
 
   spec.files         = `git ls-files -z`.split("\x0")
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }

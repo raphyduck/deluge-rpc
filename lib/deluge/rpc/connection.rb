@@ -202,7 +202,11 @@ module Deluge
         # Read message header
         protocol_version, buffer_size = socket.readpartial(5).unpack('CN')
 
-        raise('Received response with unknown protocol_version=' + protocol_version) if protocol_version != PROTOCOL_VERSION
+        # En Ruby 3, concaténer String + Integer lève un TypeError.
+        # On utilise l’interpolation pour garder le même message.
+        if protocol_version != PROTOCOL_VERSION
+            raise("Received response with unknown protocol_version=#{protocol_version}")
+        end
 
         # a big response requires some extra reads because deluged may be
         # slow to generate and send all the data through the socket
